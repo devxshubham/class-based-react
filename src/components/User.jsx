@@ -5,33 +5,39 @@ class User extends React.Component{
         super(props);
 
         this.state = {
-            count1 : 0,
-            count2 : 100
-
+            userInfo : {
+                login : "dummy",
+                avatar_url : "dummy.png"
+            }
         }
+        // console.log(this.props.name+"child constructor");
     }
     
+    async componentDidMount(){
+        // console.log(this.props.name+"child component did mount ");
+        const response = await fetch("https://api.github.com/users/"+this.props.userId)
+        const data = await response.json()
+        console.log(data);
+        this.setState({
+            userInfo : data
+        })
+    }
+    componentDidUpdate(){
+        console.log("componentDidUpdate");
+    }
+    componentWillUnmount(){
+        console.log("component will unmount");
+    }
     render(){
-        const {name, branch} = this.props
-        
+        const {login, avatar_url} = this.state.userInfo
+        // console.log(this.props.name +"child component");
 
         return <div>
-            <h1>{this.state.count1}</h1>
-            <button onClick={()=>{
-                this.setState({
-                    count1 : ++this.state.count1,
-                    count2 : --this.state.count2,
-                })
-
-            }}>inc</button>
-            <h1>{this.state.count2}</h1>
-            <button onClick={()=>{
-                this.setState({
-                    count2 : --this.state.count2,
-                })
-            }}>dec</button>
-            <h3>name : {name}</h3>
-            <h4>branch : {branch}</h4>
+            <img src={avatar_url} alt="" style={{
+                content : "contain",
+                width : "150px"
+            }} />
+            <h3>User Name : {login}</h3>
         </div>
     }
 }
